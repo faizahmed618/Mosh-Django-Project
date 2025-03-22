@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 # A model is a class that represents a database table.
@@ -15,10 +16,16 @@ class Collection(models.Model):
     featured_product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True, related_name="+")
     # this + will not create a reverse relationship with product class
     
+    def __str__(self): # this is a string representation of the object in the admin panel
+        return self.title # when the object is printed this is implicitly called
+    
+    class Meta: # this is a meta class for ordering the items
+        ordering = ["title"]
+    
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
-    # by default it create product-set but if we write related name = "products" it will create with this
+    # by default it create "product_set" but if we write related name = "products" it will create with this
     # Django handles the reverse relationship
     
 class Product(models.Model):
@@ -26,11 +33,19 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField()
     description = models.TextField()
-    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6, 
+                                     decimal_places=2,
+                                     validators=[MinValueValidator(1)])
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT) # In case we delete the collection we dont delete the products
     promotions = models.ManyToManyField(Promotion)
+    
+    def __str__(self): # this is a string representation of the object in the admin panel
+        return self.title # when the object is printed this is implicitly called
+    
+    class Meta: # this is a meta class for ordering the items
+        ordering = ["title"]
 
     
 class Customer(models.Model):
@@ -51,6 +66,12 @@ class Customer(models.Model):
     membership = models.CharField(
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE
     )
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+    
+    class Meta: # this is a meta class for ordering the items
+        ordering = ["first_name", "last_name"]
     
 class Order(models.Model):
     PAYMENT_STATUS_PENDING = "P"
@@ -76,6 +97,7 @@ class Address(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
 
 class OrderItem(models.Model):
+    # reverse relationship with order with the name "orderitem_set" in order class
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveSmallIntegerField()
