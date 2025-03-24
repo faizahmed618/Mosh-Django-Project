@@ -87,14 +87,14 @@ class CustomerAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(orders_count = Count("order"))
     
-class OrderItemInline(admin.TabularInline):
+class OrderItemInline(admin.TabularInline): #Getting the orderItem in list view 1 2 3
     autocomplete_fields = ["product"]
     model = models.OrderItem
     
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ["customer"]
-    inlines = [OrderItemInline]
+    inlines = [OrderItemInline] # this is for tabular inline item orderItem.
     list_display = ["id", "placed_at", "customer"]
     list_per_page = 10
 
