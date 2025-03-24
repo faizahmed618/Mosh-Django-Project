@@ -18,7 +18,7 @@ class ProductSerializer(serializers.ModelSerializer): # class ProductSerializer(
     class Meta:
         model = Product
         # fields = "__all__" # return all fields for lazy developers
-        fields = ["id", "title", "unit_price", "price_with_tax", "collection"]
+        fields = ["id", "title", "description", "slug", "inventory", "unit_price", "price_with_tax", "collection"]
         
     # id = serializers.IntegerField()
     # title = serializers.CharField(max_length=255)
@@ -45,3 +45,15 @@ class ProductSerializer(serializers.ModelSerializer): # class ProductSerializer(
     
     def calculate_tax(self, product: Product):
         return product.unit_price * Decimal(1.1)
+    
+    # these things done by serializer save() method
+    # def create(self, validated_data):
+    #     product = Product(**validated_data)
+    #     product.other = 1
+    #     product.save()
+    #     return super().create(validated_data)
+    
+    # def update(self, instance, validated_data):
+    #     instance.unit_price = validated_data.get("unit_price")
+    #     instance.save()
+    #     return super().update(instance, validated_data)
