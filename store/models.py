@@ -38,7 +38,7 @@ class Product(models.Model):
                                      validators=[MinValueValidator(1)])
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
-    collection = models.ForeignKey(Collection, on_delete=models.PROTECT) # In case we delete the collection we dont delete the products
+    collection = models.ForeignKey(Collection, on_delete=models.PROTECT, related_name="products") # In case we delete the collection we dont delete the products
     promotions = models.ManyToManyField(Promotion)
     
     def __str__(self): # this is a string representation of the object in the admin panel
@@ -99,7 +99,7 @@ class Address(models.Model):
 class OrderItem(models.Model):
     # reverse relationship with order with the name "orderitem_set" in order class
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="orderitems")
     quantity = models.PositiveSmallIntegerField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     
