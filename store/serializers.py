@@ -1,6 +1,6 @@
 from decimal import Decimal
 from rest_framework import serializers
-from .models import Product, Collection
+from .models import Product, Collection, Reviews, Order, OrderItem, Cart, CartItem, Customer
 
 # these serializers are used to convert data into JSON format
 # It doesnot neceassary to add all fields of model in serializer
@@ -17,6 +17,8 @@ class CollectionSerializer(serializers.ModelSerializer):
     # title = serializers.CharField(max_length=255)
 
 class ProductSerializer(serializers.ModelSerializer): # class ProductSerializer(serializers.Serializer):
+    # since we are using ModelSerializer we dont need to define the fields explicitly
+    # we are doing donkey work by defining double in model class and in serailizer class so using model serializer.
     class Meta:
         model = Product
         # fields = "__all__" # return all fields for lazy developers
@@ -59,3 +61,13 @@ class ProductSerializer(serializers.ModelSerializer): # class ProductSerializer(
     #     instance.unit_price = validated_data.get("unit_price")
     #     instance.save()
     #     return super().update(instance, validated_data)
+    
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reviews
+        fields = ["id", "name", "description", "date"]
+    
+    def create(self, validated_data):
+        product_id = self.context["product_id"]
+        return Reviews.objects.create(product_id=product_id, **validated_data)
+        

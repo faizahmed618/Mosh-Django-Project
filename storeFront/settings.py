@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "rest_framework",
     
     "playground",
@@ -139,5 +140,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    "COERCE_DECIMAL_TO_STRING": False
+    "COERCE_DECIMAL_TO_STRING": False,
+    # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination", # this is defining for global everywhere without writing explicitly in each view
+    # "PAGE_SIZE": 10 # this gives warning
 }
